@@ -7,6 +7,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "android_architecture"
-include ':mvc'
 include ':mvp'
 include ':mvvm'
+include ':mvc'

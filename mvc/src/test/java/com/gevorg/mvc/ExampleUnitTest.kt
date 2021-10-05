@@ -1,4 +1,4 @@
-package com.gevorg.android_architecture
+package com.gevorg.mvc
 
 import org.junit.Test
 
