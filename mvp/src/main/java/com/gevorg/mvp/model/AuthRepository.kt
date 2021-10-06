@@ -1,4 +1,4 @@
-package com.gevorg.myapplication
+package com.gevorg.mvp.model
 
 import kotlinx.coroutines.Deferred
 

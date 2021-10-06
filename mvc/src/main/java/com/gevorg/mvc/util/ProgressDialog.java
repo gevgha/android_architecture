@@ -1,4 +1,4 @@
-package com.gevorg.mvc;
+package com.gevorg.mvc.util;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
