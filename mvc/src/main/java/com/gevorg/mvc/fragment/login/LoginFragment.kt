@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.gevorg.mvc.R
-import com.gevorg.mvc.databinding.ActivityMainBinding
 import com.gevorg.mvc.databinding.FragmentLoginBinding
-import com.gevorg.mvc.model.AuthRepositoryImpl
+import com.gevorg.mvc.api.AuthRepositoryImpl
 import com.gevorg.mvc.toLength
 import com.gevorg.mvc.toText
 import com.gevorg.mvc.util.ProgressDialog
@@ -71,13 +69,9 @@ class LoginFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 ProgressDialog.dismiss()
                 if (errorMassage.isEmpty()) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
                 } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), errorMassage, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), errorMassage, Toast.LENGTH_SHORT).show()
                 }
             }
         }
