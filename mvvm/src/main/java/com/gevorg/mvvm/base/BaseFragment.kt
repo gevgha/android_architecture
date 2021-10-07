@@ -1,25 +1,32 @@
 package com.gevorg.mvvm.base
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.ContentView
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewbinding.ViewBinding
 import com.gevorg.mvvm.activities.MainActivity
+import com.gevorg.mvvm.fragments.LoginViewModel
+import com.gevorg.mvvm.model.ViewState
+import com.gevorg.mvvm.util.ProgressDialog
+import com.gevorg.mvvm.util.toast
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
-abstract class BaseFragment : Fragment {
+abstract class BaseFragment<VB : ViewBinding>(val bindingFactory: (LayoutInflater) -> VB) :
+    Fragment() {
 
-    constructor() : super()
-
-    @ContentView
-    constructor(@LayoutRes contentLayoutId: Int) : super(contentLayoutId)
+    private lateinit var viewModel: BaseViewModel
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
+    private var _binding: VB? = null
+    protected val binding get() = _binding!!
 
     protected fun <T : ViewModel> getViewModel(cls: Class<T>): T {
         return ViewModelProvider(this, viewModelFactory).get(cls)
@@ -30,8 +37,17 @@ abstract class BaseFragment : Fragment {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        _binding = bindingFactory(layoutInflater)
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,11 +59,18 @@ abstract class BaseFragment : Fragment {
         view: View,
         savedInstanceState: Bundle?
     ) {
-
+        viewModel = getViewModel(BaseViewModel::class.java)
+        viewModel.view.observe(viewLifecycleOwner) {
+            when (it) {
+                ViewState.START_PROGRESS -> ProgressDialog.show(requireContext())
+                ViewState.STOP_PROGRESS -> ProgressDialog.dismiss()
+                ViewState.SHOW_ERROR -> it.value.toast(requireContext())
+            }
+        }
     }
 
     fun getMainActivity(): MainActivity? {
-        if (activity is MainActivity){
+        if (activity is MainActivity) {
             return activity as MainActivity
         }
         return null

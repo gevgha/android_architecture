@@ -12,7 +12,7 @@
         android:id="@+id/toastTextTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#363FF4"
+        android:background="@drawable/bg"
         android:gravity="center"
         android:paddingStart="26dp"
         android:lineSpacingExtra="6sp"

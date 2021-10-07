@@ -1,17 +1,11 @@
 package com.gevorg.mvvm.activities
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.gevorg.mvvm.R
+
+import com.gevorg.mvvm.base.BaseActivity
 import com.gevorg.mvvm.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
-  
-    lateinit var binding: ActivityMainBinding
-    
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
-    }
+
+
 }
