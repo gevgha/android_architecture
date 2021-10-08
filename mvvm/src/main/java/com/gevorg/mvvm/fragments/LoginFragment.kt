@@ -18,6 +18,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = getViewModel(LoginViewModel::class.java)
+        baseViewModel = viewModel
+        observeCommand()
         viewModel.currentUser.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.textEmail.setText(it.email)

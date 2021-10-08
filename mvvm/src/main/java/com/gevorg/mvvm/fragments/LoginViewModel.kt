@@ -13,24 +13,21 @@ class LoginViewModel @Inject constructor(var repository: AuthRepositoryImpl) : B
     val currentUser = repository.currentUser.asLiveData()
 
     init {
-        showProgress()
         viewModelScope.launch(Dispatchers.IO) {
             delay(3000)
             withContext(Dispatchers.Main) {
-                hideProgress()
-                showMessage(R.string.success)
+
             }
         }
     }
 
     fun login(email: String, password: String) {
-        showProgress()
         if (!validateEmail(email)) {
-            showError("Input email")
+            showError("Incorrect email")
             return
         }
         if (!validatePassword(password)) {
-            showError("Input password")
+            showError("Incorrect password")
             return
         }
         performLogin(email, password)

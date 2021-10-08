@@ -6,37 +6,38 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.gevorg.mvvm.model.ViewState
 import com.gevorg.mvvm.util.ProgressDialog
 import com.gevorg.mvvm.util.toast
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
-abstract class BaseActivity<VB : ViewBinding>(val bindingFactory: (LayoutInflater) -> VB) : AppCompatActivity()  {
+abstract class BaseActivity<VB : ViewBinding>(val bindingFactory: (LayoutInflater) -> VB) :
+    AppCompatActivity() {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
     private var _binding: VB? = null
     protected val binding get() = _binding!!
-    private lateinit var viewModel: BaseViewModel
+    protected open lateinit var baseViewModel: BaseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = bindingFactory(layoutInflater)
         setContentView(binding.root)
         AndroidInjection.inject(this)
-        viewModel = getViewModel(BaseViewModel::class.java)
-        viewModel.view.observe(this) {
+        attachBaseViewModel()
+        observeCommand()
+    }
+
+    protected fun observeCommand() {
+        baseViewModel.baseCommand.observe(this, {
             when (it) {
-                ViewState.START_PROGRESS -> ProgressDialog.show(this)
-                ViewState.STOP_PROGRESS -> ProgressDialog.dismiss()
+                is BaseViewModel.BaseCommand.ShowError -> it.text.toast(this)
+                is BaseViewModel.BaseCommand.ShowMessage -> it.resId.toast(this)
+                is BaseViewModel.BaseCommand.ShowProgress -> ProgressDialog.show(this)
+                is BaseViewModel.BaseCommand.HideProgress -> ProgressDialog.dismiss()
+
             }
-        }
-        viewModel.error.observe(this,  { message ->
-            message.toast(this)
-        })
-        viewModel.message.observe(this, { message ->
-            message.toast(this)
         })
     }
 
@@ -44,4 +45,7 @@ abstract class BaseActivity<VB : ViewBinding>(val bindingFactory: (LayoutInflate
         return ViewModelProvider(this, viewModelFactory).get(cls)
     }
 
+    protected fun attachBaseViewModel() {
+        baseViewModel = getViewModel(BaseViewModel::class.java)
+    }
 }
