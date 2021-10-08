@@ -3,13 +3,31 @@ package com.gevorg.mvvm.base
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.gevorg.mvvm.api.AuthRepositoryImpl
-import com.gevorg.mvvm.model.ErrorResult
-import com.gevorg.mvvm.model.User
 import com.gevorg.mvvm.model.ViewState
-import com.gevorg.mvvm.observer.DataResult
 
-open class BaseViewModel() : ViewModel() {
-    val _view = MutableLiveData<ViewState>()
+open class BaseViewModel : ViewModel() {
+
+    private val _view = MutableLiveData<ViewState>()
     val view: LiveData<ViewState> = _view
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
+    private val _message = MutableLiveData<Int>()
+    val message: LiveData<Int> = _message
+
+    fun showError(error: String) {
+        _error.postValue(error)
+    }
+
+    fun showMessage(resId: Int) {
+        _message.value = resId
+    }
+
+    fun showProgress() {
+        _view.postValue(ViewState.START_PROGRESS)
+    }
+
+    fun hideProgress() {
+        _view.postValue(ViewState.STOP_PROGRESS)
+    }
+
 }

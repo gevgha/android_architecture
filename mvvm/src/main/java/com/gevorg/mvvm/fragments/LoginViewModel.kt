@@ -2,9 +2,9 @@ package com.gevorg.mvvm.fragments
 
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.gevorg.mvvm.R
 import com.gevorg.mvvm.api.AuthRepositoryImpl
 import com.gevorg.mvvm.base.BaseViewModel
-import com.gevorg.mvvm.model.ViewState
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -13,29 +13,31 @@ class LoginViewModel @Inject constructor(var repository: AuthRepositoryImpl) : B
     val currentUser = repository.currentUser.asLiveData()
 
     init {
-        _view.value = ViewState.START_PROGRESS
+        showProgress()
         viewModelScope.launch(Dispatchers.IO) {
             delay(3000)
             withContext(Dispatchers.Main) {
-                _view.value = ViewState.STOP_PROGRESS
+                hideProgress()
+                showMessage(R.string.success)
             }
         }
     }
 
     fun login(email: String, password: String) {
+        showProgress()
         if (!validateEmail(email)) {
-            _view.value = ViewState.SHOW_ERROR
+            showError("Input email")
             return
         }
         if (!validatePassword(password)) {
-            _view.value = ViewState.SHOW_ERROR
+            showError("Input password")
             return
         }
         performLogin(email, password)
     }
 
     private fun validatePassword(password: String): Boolean {
-        return password.length ?: 0 >= 8
+        return password.length >= 8
     }
 
     private fun validateEmail(email: String): Boolean {
@@ -45,18 +47,18 @@ class LoginViewModel @Inject constructor(var repository: AuthRepositoryImpl) : B
     //Model implementation
     @OptIn(DelicateCoroutinesApi::class)
     private fun performLogin(email: String, password: String) {
-//        view?.showProgressDialog()
+        showProgress()
         GlobalScope.launch(Dispatchers.IO) {
             val errorMassage = repository.login(
                 email = email,
                 password = password
             ).await()
             withContext(Dispatchers.Main) {
-//                ProgressDialog.dismiss()
+                hideProgress()
                 if (errorMassage.isEmpty()) {
-//                    view?.showMessage("Success")
+                    showMessage(R.string.success)
                 } else {
-//                    view?.showError(errorMassage)
+                    showError(errorMassage)
                 }
             }
         }

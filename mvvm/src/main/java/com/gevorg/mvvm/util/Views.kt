@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.gevorg.mvvm.R
 
 fun EditText.toText():String{
@@ -28,8 +29,9 @@ fun String.toast(context: Context?) {
     val layout = LayoutInflater.from(context).inflate(
         R.layout.toast_layout,null)
     toast = Toast.makeText(context, this, Toast.LENGTH_SHORT)
-    toast?.setGravity(Gravity.CENTER, 0, 150)
+    toast?.setGravity(Gravity.TOP, 0, 25)
     layout.findViewById<TextView>(R.id.toastTextTv).text = this
+    layout.findViewById<TextView>(R.id.toastTextTv).setTextColor(ContextCompat.getColor(context!!,R.color.green))
     toast?.view = layout
     toast?.show()
 }
@@ -40,8 +42,9 @@ fun Int.toast(context: Context?) {
     val layout = LayoutInflater.from(context).inflate(
         R.layout.toast_layout,null)
     toast = Toast.makeText(context, this, Toast.LENGTH_SHORT)
-    toast?.setGravity(Gravity.CENTER, 0, 150)
+    toast?.setGravity(Gravity.TOP, 0, 25)
     layout.findViewById<TextView>(R.id.toastTextTv).setText(this)
+    layout.findViewById<TextView>(R.id.toastTextTv).setTextColor(ContextCompat.getColor(context!!,R.color.green))
     toast?.view = layout
     toast?.show()
 }

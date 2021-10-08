@@ -1,12 +1,14 @@
 package com.gevorg.mvvm.base
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ContentView
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
@@ -64,9 +66,14 @@ abstract class BaseFragment<VB : ViewBinding>(val bindingFactory: (LayoutInflate
             when (it) {
                 ViewState.START_PROGRESS -> ProgressDialog.show(requireContext())
                 ViewState.STOP_PROGRESS -> ProgressDialog.dismiss()
-                ViewState.SHOW_ERROR -> it.value.toast(requireContext())
             }
         }
+        viewModel.error.observe(viewLifecycleOwner,  { message ->
+            message.toast(requireContext())
+        })
+        viewModel.message.observe(viewLifecycleOwner, { message ->
+            message.toast(requireContext())
+        })
     }
 
     fun getMainActivity(): MainActivity? {
